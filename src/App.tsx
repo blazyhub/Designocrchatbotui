@@ -3,6 +3,7 @@ import { ChatView } from './components/ChatView';
 import { CameraView } from './components/CameraView';
 import { FlashcardView } from './components/FlashcardView';
 import { DocumentProcessingView } from './components/DocumentProcessingView';
+import { LoginView } from './components/LoginView';
 
 export type ViewType = 'chat' | 'camera' | 'flashcard' | 'processing';
 
@@ -15,9 +16,22 @@ export interface DocumentData {
 }
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<ViewType>('chat');
   const [processingDocument, setProcessingDocument] = useState<DocumentData | null>(null);
   const [flashcardSet, setFlashcardSet] = useState<any>(null);
+
+  const handleLogin = (email: string, password: string) => {
+    // Simulate login
+    setUserEmail(email);
+    setIsAuthenticated(true);
+  };
+
+  const handleGuestLogin = () => {
+    setUserEmail('guest');
+    setIsAuthenticated(true);
+  };
 
   const handleScanDocument = (file?: File) => {
     setProcessingDocument({
@@ -48,6 +62,14 @@ export default function App() {
   const handleBackToChat = () => {
     setCurrentView('chat');
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="h-screen w-full bg-[#0a0a0a] text-white overflow-hidden">
+        <LoginView onLogin={handleLogin} onGuestLogin={handleGuestLogin} />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen w-full bg-[#0a0a0a] text-white overflow-hidden">
